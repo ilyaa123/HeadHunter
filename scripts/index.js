@@ -68,6 +68,10 @@ cityRegionList.addEventListener('click', (event) => {
     }
 });
 
+cityClose.addEventListener('click', () => {
+    city.classList.remove('city_active');
+});
+
 //Модальное окно
 const overlayVacancy = document.querySelector('.overlay_vacancy');
 const resultList = document.querySelector('.result__list')
@@ -87,3 +91,81 @@ overlayVacancy.addEventListener('click', (event) => {
         overlayVacancy.classList.remove('overlay_active');
     }
 });
+
+
+//Вывод карточек
+const createCard = (vacancy) => {
+    const {
+        title,
+        id,
+        compensation,
+        workSchedule,
+        employer,
+        address,
+        description,
+        date
+    } = vacancy;
+
+    const card = document.createElement('li');
+    card.classList.add('result__item');
+
+    card.insertAdjacentHTML('afterbegin', `
+            <article class="vacancy">
+                <h2 class="vacancy__title">
+                    <a class="vacancy__open-modal" href="#" data-vacancy="${id}">${title}</a>
+                </h2>
+                <p class="vacancy__compensation">${compensation}</p>
+                <p class="vacancy__work-schedule">${workSchedule}</p>
+                <div class="vacancy__employer">
+                    <p class="vacancy__employer-title">${employer}</p>
+                    <p class="vacancy__employer-address">${address}</p>
+                </div>
+                <p class="vacancy__description">${description}</p>
+
+                <p class="vacancy__date">
+                    <time datetime="${date}">${date}</time>
+                </p>
+                <div class="vacancy__wrapper-btn">
+                    <a class="vacancy__response vacancy__open-modal" href="#" data-vacancy="3${id}">Откликнуться</a>
+                    <button class="vacancy__contacts">Показать контакты</button>
+                </div>
+            </article>
+        `
+    );
+    return card;
+}
+
+const renderCard = (data) => {
+    resultList.textContent = '';
+
+    const cards = data.map(createCard)
+
+    resultList.append(...cards);
+};
+
+const getData = ({search} = {}) => {
+    if (search){
+        return fetch(`http://localhost:3000/api/vacancy?search=${search}`).then(response => response.json());
+    }
+    return fetch('http://localhost:3000/api/vacancy').then(response => response.json());
+}
+
+const formSearch = document.querySelector('.bottom__search');
+
+formSearch.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const textSearch = formSearch.search.value;
+
+    const data = await getData({search: textSearch});
+    renderCard(data);
+    formSearch.reset();
+
+    
+});
+
+const init = async () => {
+    const data = await getData();
+    renderCard(data);
+};
+
+init();
