@@ -72,7 +72,7 @@ const createCard = (vacancy) => {
                     <time datetime="${date}">${date}</time>
                 </p>
                 <div class="vacancy__wrapper-btn">
-                    <a class="vacancy__response vacancy__open-modal" href="#" data-vacancy="3${id}">Откликнуться</a>
+                    <a class="vacancy__response vacancy__open-modal" href="#" data-vacancy="${id}">Откликнуться</a>
                     <button class="vacancy__contacts">Показать контакты</button>
                 </div>
             </article>
@@ -191,7 +191,6 @@ const cityHandler = () => {
 };
 
 const createModal = (data) => {
-    console.log(data);
     const {
         address,
         compensation,
@@ -202,7 +201,6 @@ const createModal = (data) => {
         skills,
         title,
     } = data;
-
     const modal = document.createElement('div');
     modal.classList.add('modal');
 
@@ -247,7 +245,7 @@ const createModal = (data) => {
 
     const skillsListElem = document.createElement('ul');
     skillsListElem.classList.add('skills__list');
-
+    
     for(const skill of skills){
         const skillsItemElem = document.createElement('li');
         skillsItemElem.classList.add('skills__item');
@@ -277,8 +275,9 @@ const createModal = (data) => {
 
 const modalHandler = () => {
     let modal = null;
+
     resultList.addEventListener('click', async (event) => {
-        target = event.target;
+        const target = event.target;
     
         if(target.dataset.vacancy){
             event.preventDefault();
@@ -324,7 +323,7 @@ const init = async () => {
     sortData();
     data = filterData();
     renderCard(data);
-    
+    console.log(data);
     optionHandler();
     cityHandler();
     modalHandler();
